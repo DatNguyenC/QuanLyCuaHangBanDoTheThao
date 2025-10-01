@@ -35,7 +35,7 @@ public class BanHangPanel extends JPanel {
         setBackground(Color.WHITE);
 
         // === PANEL GIỎ HÀNG ===
-        JPanel gioHangPanel = FormUIHelper.createTitledPanel("Thông tin giỏ hàng");
+        JPanel gioHangPanel = FormUIHelper.createTitledPanel("THÔNG TIN GIỎ HÀNG");
         gioHangPanel.setLayout(new BorderLayout());
 
         modelGioHang = new DefaultTableModel(new String[]{"Mã Giỏ Hàng", "Mã Người Dùng", "Ngày Tạo"}, 0);
@@ -45,18 +45,18 @@ public class BanHangPanel extends JPanel {
         // CHỨC NĂNG GIỎ HÀNG
         JPanel pnChucNangGio = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         pnChucNangGio.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(new Color(100, 149, 237)),
-                "Chức năng",
+                BorderFactory.createLineBorder(new Color(70, 130, 180)),
+                "CHỨC NĂNG",
                 TitledBorder.LEFT,
                 TitledBorder.TOP,
                 new Font("Segoe UI", Font.BOLD, 12),
-                new Color(30, 144, 255)
+                new Color(70, 130, 180)
         ));
         pnChucNangGio.setBackground(Color.WHITE);
 
-        JButton btnTao = FormUIHelper.createStyledButton("Tạo", new Color(34, 139, 34));
-        JButton btnXoa = FormUIHelper.createStyledButton("Xóa", new Color(220, 20, 60));
-        JButton btnTaoDonHang = FormUIHelper.createStyledButton("Tạo đơn hàng", new Color(65, 105, 225));
+        JButton btnTao = FormUIHelper.createStyledButton("Tạo", new Color(70, 130, 180));
+        JButton btnXoa = FormUIHelper.createStyledButton("Xóa", new Color(70, 130, 180));
+        JButton btnTaoDonHang = FormUIHelper.createStyledButton("Tạo đơn hàng", new Color(70, 130, 180));
         JButton btnLamMoi = FormUIHelper.createStyledButton("Làm mới", new Color(70, 130, 180));
 
         pnChucNangGio.add(btnTao);
@@ -66,7 +66,7 @@ public class BanHangPanel extends JPanel {
         gioHangPanel.add(pnChucNangGio, BorderLayout.SOUTH);
 
         // === PANEL CHI TIẾT GIỎ ===
-        JPanel chiTietPanel = FormUIHelper.createTitledPanel("Chi tiết giỏ hàng");
+        JPanel chiTietPanel = FormUIHelper.createTitledPanel("CHI TIẾT GIỎ HÀNG");
         chiTietPanel.setLayout(new BorderLayout());
 
         modelChiTiet = new DefaultTableModel(new String[]{"Mã Chi Tiết Giỏ Hàng", "Mã Giỏ Hàng", "Mã Chi Tiết", "Mã Sản Phẩm", "Số Lượng"}, 0);
@@ -78,20 +78,20 @@ public class BanHangPanel extends JPanel {
         JPanel pnChucNangCT = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         pnChucNangCT.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(new Color(30, 144, 255)),
-                "Chức năng",
+                "CHỨC NĂNG",
                 TitledBorder.LEFT,
                 TitledBorder.TOP,
                 new Font("Segoe UI", Font.BOLD, 12),
-                new Color(30, 144, 255)
+                new Color(70, 130, 180)
         ));
         pnChucNangCT.setBackground(Color.WHITE);
 
-        JButton btnThem = FormUIHelper.createStyledButton("Thêm", new Color(34, 139, 34));
-        JButton btnSua = FormUIHelper.createStyledButton("Sửa", new Color(242, 161, 0));
-        JButton btnXoaCT = FormUIHelper.createStyledButton("Xóa", new Color(220, 20, 60));
+        JButton btnThem = FormUIHelper.createStyledButton("Thêm", new Color(70, 130, 180));
+        JButton btnXoaCT = FormUIHelper.createStyledButton("Xóa", new Color(70, 130, 180));
+        JButton btnSua = FormUIHelper.createStyledButton("Sửa", new Color(70, 130, 180));
         pnChucNangCT.add(btnThem);
-        pnChucNangCT.add(btnSua);
         pnChucNangCT.add(btnXoaCT);
+        pnChucNangCT.add(btnSua);
         chiTietPanel.add(pnChucNangCT, BorderLayout.SOUTH);
 
         // === ADD TO MAIN ===

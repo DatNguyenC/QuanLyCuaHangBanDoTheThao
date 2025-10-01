@@ -41,8 +41,8 @@ public class FormTaoGioHang extends JDialog {
 
         // Panel nút
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        btnThem = FormUIHelper.createStyledButton("Thêm", new Color(34, 139, 34));
-        btnHuy = FormUIHelper.createStyledButton("Hủy", new Color(169, 169, 169));
+        btnThem = FormUIHelper.createStyledButton("Thêm", new Color(70, 130, 180));
+        btnHuy = FormUIHelper.createStyledButton("Hủy", new Color(70, 130, 180));
         buttonPanel.add(btnThem);
         buttonPanel.add(btnHuy);
         add(buttonPanel, BorderLayout.SOUTH);

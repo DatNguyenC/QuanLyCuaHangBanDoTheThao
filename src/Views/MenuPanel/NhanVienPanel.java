@@ -69,7 +69,7 @@ public class NhanVienPanel extends JPanel {
         lblAnh.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         FormUIHelper.addFormRow(formPanel, gbc, 6, "Ảnh đại diện:", lblAnh);
 
-        JButton btnChonAnh = FormUIHelper.createStyledButton("Chọn ảnh", new Color(100, 149, 237));
+        JButton btnChonAnh = FormUIHelper.createStyledButton("Chọn ảnh", new Color(70, 130, 180));
         gbc.gridx = 1;
         gbc.gridy = 7;
         formPanel.add(btnChonAnh, gbc);
@@ -86,7 +86,7 @@ public class NhanVienPanel extends JPanel {
 
         JTextField txtLocMa = FormUIHelper.createStyledTextField(10);
         JTextField txtLocTenDangNhap = FormUIHelper.createStyledTextField(10);
-        JButton btnLoc = FormUIHelper.createStyledButton("Lọc", new Color(100, 149, 237));
+        JButton btnLoc = FormUIHelper.createStyledButton("Lọc", new Color(70, 130, 180));
 
         locPanel.add(new JLabel("Mã ND:"));
         locPanel.add(txtLocMa);
@@ -113,10 +113,10 @@ public class NhanVienPanel extends JPanel {
         btnPanel.setBorder(BorderFactory.createTitledBorder("CHỨC NĂNG"));
         btnPanel.setBackground(Color.WHITE);
 
-        JButton btnThem = FormUIHelper.createStyledButton("Thêm", new Color(60, 179, 113));
-        JButton btnSua = FormUIHelper.createStyledButton("Sửa", new Color(255, 165, 0));
-        JButton btnXoa = FormUIHelper.createStyledButton("Xóa", new Color(220, 53, 69));
-        JButton btnClear = FormUIHelper.createStyledButton("Làm mới", new Color(100, 149, 237));
+        JButton btnThem = FormUIHelper.createStyledButton("Thêm", new Color(70, 130, 180));
+        JButton btnSua = FormUIHelper.createStyledButton("Sửa", new Color(70, 130, 180));
+        JButton btnXoa = FormUIHelper.createStyledButton("Xóa", new Color(70, 130, 180));
+        JButton btnClear = FormUIHelper.createStyledButton("Làm mới", new Color(70, 130, 180));
 
         for (JButton btn : new JButton[]{btnThem, btnSua, btnXoa, btnClear}) {
             btn.setMaximumSize(new Dimension(150, 40));

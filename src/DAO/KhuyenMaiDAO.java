@@ -2,6 +2,7 @@ package DAO;
 
 import Models.KhuyenMai;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class KhuyenMaiDAO {
@@ -105,6 +106,14 @@ public class KhuyenMaiDAO {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public KhuyenMai layKhuyenMaiApDung(int maSP) {
+        LocalDateTime now = LocalDateTime.now();
+        return layTatCa().stream()
+                .filter(k -> k.getMaSanPham() == maSP)
+                .filter(k -> !now.isBefore(k.getNgayBatDau()) && !now.isAfter(k.getNgayKetThuc()))
+                .findFirst().orElse(null);
     }
 
 }

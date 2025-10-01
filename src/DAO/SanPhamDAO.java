@@ -214,21 +214,46 @@ public class SanPhamDAO {
 
         return sp;
     }
-    public int laySoLuongTon(int maChiTiet) {
-    int soLuong = 0;
-    String sql = "SELECT SoLuongTon FROM chitietsanpham WHERE MaChiTiet = ?";
-    try (Connection conn = DBConnect.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, maChiTiet);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            soLuong = rs.getInt("SoLuongTon");
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    return soLuong;
-}
 
+    public int laySoLuongTon(int maChiTiet) {
+        int soLuong = 0;
+        String sql = "SELECT SoLuongTon FROM chitietsanpham WHERE MaChiTiet = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, maChiTiet);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                soLuong = rs.getInt("SoLuongTon");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return soLuong;
+    }
+
+    public SanPham laySanPhamTheoTen(String ten) {
+        SanPham sp = null;
+        String sql = "SELECT * FROM sanpham WHERE TenSanPham = ?";
+
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, ten);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    sp = new SanPham();
+                    sp.setMaSanPham(rs.getInt("MaSanPham"));
+                    sp.setTenSanPham(rs.getString("TenSanPham"));
+                    sp.setMoTa(rs.getString("MoTa"));
+                    sp.setGia(rs.getDouble("Gia"));
+                    sp.setHinhAnh(rs.getString("HinhAnh"));
+                    sp.setMaDanhMuc(rs.getString("MaDanhMuc"));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return sp;
+    }
 
 }

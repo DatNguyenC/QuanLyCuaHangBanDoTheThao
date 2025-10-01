@@ -2,6 +2,7 @@ package Views.MenuPanel;
 
 import Models.NguoiDung;
 import Views.AdminForm;
+import Views.UIHelper.FormUIHelper;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -33,9 +34,9 @@ public class ThongTinTaiKhoanPanel extends JPanel {
         title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
         add(title, BorderLayout.NORTH);
 
-        // Panel chứa form
         JPanel formWrapper = new JPanel(new GridBagLayout());
         formWrapper.setBackground(Color.WHITE);
+
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setBackground(Color.WHITE);
@@ -43,19 +44,18 @@ public class ThongTinTaiKhoanPanel extends JPanel {
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY),
                 BorderFactory.createEmptyBorder(20, 30, 20, 30)));
 
-        // Ảnh đại diện
         lblAnh = new JLabel();
         lblAnh.setPreferredSize(new Dimension(100, 100));
         lblAnh.setMaximumSize(new Dimension(100, 100));
         lblAnh.setAlignmentX(Component.CENTER_ALIGNMENT);
         hienThiAnh(lblAnh, nguoiDung.getAnhDaiDien());
 
-        btnChonAnh = new JButton("Chọn ảnh");
+        btnChonAnh = FormUIHelper.createRoundedButton("Chọn ảnh");
         btnChonAnh.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnChonAnh.addActionListener(e -> chonAnh());
 
         formPanel.add(lblAnh);
-        formPanel.add(Box.createVerticalStrut(5));
+        formPanel.add(Box.createVerticalStrut(15));
         formPanel.add(btnChonAnh);
         formPanel.add(Box.createVerticalStrut(15));
 
@@ -67,12 +67,8 @@ public class ThongTinTaiKhoanPanel extends JPanel {
 
         setEditable(false);
 
-        btnChinhSua = new JButton("Chỉnh sửa");
+        btnChinhSua = FormUIHelper.createRoundedButton("Chỉnh sửa");
         btnChinhSua.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnChinhSua.setBackground(new Color(0, 123, 255));
-        btnChinhSua.setForeground(Color.WHITE);
-        btnChinhSua.setFocusPainted(false);
-        btnChinhSua.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnChinhSua.setMaximumSize(new Dimension(120, 35));
         btnChinhSua.addActionListener(e -> handleEdit());
 
@@ -85,7 +81,7 @@ public class ThongTinTaiKhoanPanel extends JPanel {
 
     private JTextField addField(JPanel panel, String labelText, String value) {
         JPanel row = new JPanel(new BorderLayout());
-        row.setMaximumSize(new Dimension(400, 40));
+        row.setMaximumSize(new Dimension(400, 50));
         row.setBackground(Color.WHITE);
 
         JLabel label = new JLabel(labelText);
@@ -94,10 +90,27 @@ public class ThongTinTaiKhoanPanel extends JPanel {
 
         JTextField textField = new JTextField(value);
         textField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        textField.setPreferredSize(new Dimension(250, 30));
+        textField.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+        textField.setBackground(new Color(240, 240, 240));
+        textField.setOpaque(false);
+
+        JPanel roundedPanel = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(240, 240, 240));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        roundedPanel.setOpaque(false);
+        roundedPanel.setPreferredSize(new Dimension(250, 35));
+        roundedPanel.add(textField, BorderLayout.CENTER);
 
         row.add(label, BorderLayout.WEST);
-        row.add(textField, BorderLayout.CENTER);
+        row.add(roundedPanel, BorderLayout.CENTER);
 
         panel.add(row);
         panel.add(Box.createVerticalStrut(10));
@@ -133,7 +146,6 @@ public class ThongTinTaiKhoanPanel extends JPanel {
         }
     }
 
-    
     private void chonAnh() {
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(this);
@@ -165,11 +177,14 @@ public class ThongTinTaiKhoanPanel extends JPanel {
             label.setIcon(null);
         }
     }
+
     private String getFileExtension(String fileName) {
-    int dotIndex = fileName.lastIndexOf('.');
-    if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
-        return fileName.substring(dotIndex + 1); // Lấy phần mở rộng
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
+            return fileName.substring(dotIndex + 1);
+        }
+        return "";
     }
-    return ""; // Nếu không có phần mở rộng
-}
+
+
 }

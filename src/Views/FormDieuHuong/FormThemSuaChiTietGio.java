@@ -51,7 +51,7 @@ public class FormThemSuaChiTietGio extends JDialog {
         // === BUTTONS ===
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         actionPanel.setBorder(BorderFactory.createTitledBorder("Chức năng"));
-        JButton btnLuu = FormUIHelper.createStyledButton("Lưu", new Color(34, 139, 34));
+        JButton btnLuu = FormUIHelper.createStyledButton("Lưu", new Color(116, 166, 205));
         JButton btnHuy = FormUIHelper.createStyledButton("Hủy", new Color(169, 169, 169));
         actionPanel.add(btnLuu);
         actionPanel.add(btnHuy);

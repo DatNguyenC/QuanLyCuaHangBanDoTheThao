@@ -4,18 +4,33 @@ import DAO.ChiTietHoaDonDAO;
 import DAO.ChiTietSanPhamDAO;
 import DAO.HoaDonDAO;
 import DAO.KhuyenMaiDAO;
+import DAO.NguoiDungDAO;
+import Models.ChiTietHoaDon;
 import Models.HoaDon;
 import Models.KhuyenMai;
+import Models.NguoiDung;
 import Views.UIHelper.ButtonEditor;
 import Views.UIHelper.ButtonRenderer;
 import Views.UIHelper.FormUIHelper;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import java.util.List;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+import java.util.Properties;
 
 public class HoaDonKhuyenMaiPanel extends JPanel {
 
@@ -61,12 +76,11 @@ public class HoaDonKhuyenMaiPanel extends JPanel {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // ===== Bảng hóa đơn với cột Chức năng =====
-        String[] columns = {"Mã hóa đơn", "Mã người dùng", "Ngày lập", "Tổng tiền", "Trạng thái", "Khuyến mại", "Chức năng"};
+        String[] columns = {"Mã hóa đơn", "Mã người dùng", "Ngày lập", "Tổng tiền", "Trạng thái", "Chức năng"};
         DefaultTableModel modelHoaDon = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 6; // Chỉ cho cột nút xử lý có thể tương tác
+                return column == 5;
             }
         };
 
@@ -75,14 +89,13 @@ public class HoaDonKhuyenMaiPanel extends JPanel {
         tblHoaDon.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
         tblHoaDon.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-        // ===== Thêm nút "Xử lý" vào cột =====
         tblHoaDon.getColumn("Chức năng").setCellRenderer(new ButtonRenderer("Xử lý"));
         tblHoaDon.getColumn("Chức năng").setCellEditor(new ButtonEditor(new JCheckBox(), (row) -> {
             int maHD = (int) modelHoaDon.getValueAt(row, 0);
             String trangThai = (String) modelHoaDon.getValueAt(row, 4);
 
-            if ("Huy".equals(trangThai)) {
-                FormUIHelper.showErrorMessage("Hóa đơn đã bị hủy, không thể xử lý.");
+            if ("Huy".equals(trangThai) || "DaThanhToan".equals(trangThai)) {
+                FormUIHelper.showErrorMessage("Hóa đơn này không thể xử lý thêm.");
                 return;
             }
 
@@ -94,7 +107,6 @@ public class HoaDonKhuyenMaiPanel extends JPanel {
                 HoaDonDAO hdDAO = new HoaDonDAO();
                 HoaDon hd = hdDAO.timHoaDonTheoMa(maHD);
 
-                // Nếu chọn "Huy", cộng lại số lượng vào kho
                 if ("Huy".equals(chon)) {
                     ChiTietHoaDonDAO cthdDAO = new ChiTietHoaDonDAO();
                     ChiTietSanPhamDAO ctspDAO = new ChiTietSanPhamDAO();
@@ -105,7 +117,6 @@ public class HoaDonKhuyenMaiPanel extends JPanel {
                     }
                 }
 
-                // Cập nhật trạng thái hóa đơn
                 hd.setTrangThai(chon);
                 hdDAO.capNhatHoaDon(hd);
                 modelHoaDon.setValueAt(chon, row, 4);
@@ -123,16 +134,29 @@ public class HoaDonKhuyenMaiPanel extends JPanel {
                 new Color(0, 120, 215)
         ));
 
-        // ===== Bộ lọc trạng thái =====
+        // ===== Bộ lọc và Nút In =====
         JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JLabel lblLoc = new JLabel("Trạng thái:");
         String[] trangThaiOptions = {"Tất cả", "ChuaThanhToan", "DaThanhToan", "DaGiao", "Huy", "DangGiao"};
         JComboBox<String> cbTrangThai = new JComboBox<>(trangThaiOptions);
-        JButton btnLoc = FormUIHelper.createStyledButton("Lọc", new Color(0, 120, 215));
+        // Thêm JDatePicker để chọn ngày
+        JLabel lblNgay = new JLabel("Ngày lập:");
+        UtilDateModel dateModel = new UtilDateModel();
+        Properties p = new Properties();
+        p.put("text.today", "Hôm nay");
+        p.put("text.month", "Tháng");
+        p.put("text.year", "Năm");
+        JDatePanelImpl datePanel = new JDatePanelImpl(dateModel, p);
+        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        JButton btnLoc = FormUIHelper.createStyledButton("Lọc", new Color(70, 130, 180));
+        JButton btnIn = FormUIHelper.createStyledButton("In hóa đơn", new Color(46, 139, 87)); // Nút mới
 
         filterPanel.add(lblLoc);
         filterPanel.add(cbTrangThai);
+        filterPanel.add(lblNgay);
+        filterPanel.add(datePicker);
         filterPanel.add(btnLoc);
+        filterPanel.add(btnIn); // thêm nút in
 
         JPanel topPanel = new JPanel(new BorderLayout(5, 5));
         topPanel.add(filterPanel, BorderLayout.NORTH);
@@ -153,22 +177,32 @@ public class HoaDonKhuyenMaiPanel extends JPanel {
         Runnable loadHoaDon = () -> {
             modelHoaDon.setRowCount(0);
             String trangThaiLoc = (String) cbTrangThai.getSelectedItem();
+            java.util.Date selectedDate = (java.util.Date) datePicker.getModel().getValue();
             for (HoaDon hd : hoaDonDAO.layTatCaHoaDon()) {
                 if (!"Tất cả".equals(trangThaiLoc) && !hd.getTrangThai().equals(trangThaiLoc)) {
                     continue;
                 }
+                // Lọc theo ngày nếu có chọn
+                if (selectedDate != null) {
+                    java.time.LocalDate hdDate = hd.getNgayLap().toLocalDate();
+                    java.util.Calendar cal = java.util.Calendar.getInstance();
+                    cal.setTime(selectedDate);
+                    int day = cal.get(java.util.Calendar.DAY_OF_MONTH);
+                    int month = cal.get(java.util.Calendar.MONTH) + 1;
+                    int year = cal.get(java.util.Calendar.YEAR);
+                    if (hdDate.getDayOfMonth() != day || hdDate.getMonthValue() != month || hdDate.getYear() != year) {
+                        continue;
+                    }
+                }
                 modelHoaDon.addRow(new Object[]{
                     hd.getMaHoaDon(), hd.getMaNguoiDung(), hd.getNgayLap(),
-                    moneyFormat.format(hd.getTongTien()), // ✅ format tiền
+                    moneyFormat.format(hd.getTongTien()),
                     hd.getTrangThai(),
-                    hd.getMaKM() == null ? "" : hd.getMaKM(),
                     "Xử lý"
                 });
-
             }
         };
         loadHoaDon.run();
-
         btnLoc.addActionListener(e -> loadHoaDon.run());
 
         // ===== Load chi tiết khi chọn hóa đơn =====
@@ -180,9 +214,84 @@ public class HoaDonKhuyenMaiPanel extends JPanel {
                     modelCTHD.addRow(new Object[]{
                         ct.getMaChiTietHD(), ct.getMaHoaDon(), ct.getMaChiTiet(),
                         ct.getSoLuong(),
-                        moneyFormat.format(ct.getDonGia()) // ✅ format đơn giá
+                        moneyFormat.format(ct.getDonGia())
                     });
                 });
+            }
+        });
+
+        // ===== Xử lý in hóa đơn =====
+        btnIn.addActionListener(e -> {
+            int selectedRow = tblHoaDon.getSelectedRow();
+            if (selectedRow == -1) {
+                FormUIHelper.showErrorMessage("Vui lòng chọn hóa đơn để in.");
+                return;
+            }
+
+            int maHD = (int) modelHoaDon.getValueAt(selectedRow, 0);
+            HoaDon hd = hoaDonDAO.timHoaDonTheoMa(maHD);
+            List<ChiTietHoaDon> dsCT = chiTietDAO.layChiTietTheoMaHoaDon(maHD);
+            NguoiDungDAO ndDAO = new NguoiDungDAO();
+            NguoiDung nd = ndDAO.layNguoiDungBangMa(hd.getMaNguoiDung());
+
+            JFileChooser chooser = new JFileChooser();
+            chooser.setDialogTitle("Chọn vị trí lưu hóa đơn");
+            chooser.setFileFilter(new FileNameExtensionFilter("Word Document (*.docx)", "docx"));
+            if (chooser.showSaveDialog(panel) == JFileChooser.APPROVE_OPTION) {
+                String path = chooser.getSelectedFile().getAbsolutePath();
+                if (!path.endsWith(".docx")) {
+                    path += ".docx";
+                }
+
+                try (XWPFDocument doc = new XWPFDocument()) {
+                    XWPFParagraph p1 = doc.createParagraph();
+                    p1.setAlignment(ParagraphAlignment.CENTER);
+                    XWPFRun r1 = p1.createRun();
+                    r1.setBold(true);
+                    r1.setFontSize(16);
+                    r1.setText("HÓA ĐƠN BÁN HÀNG");
+
+                    XWPFParagraph p2 = doc.createParagraph();
+                    XWPFRun r2 = p2.createRun();
+                    r2.setFontSize(12);
+                    r2.setText("Mã HĐ: " + hd.getMaHoaDon());
+                    r2.addBreak();
+                    r2.setText("Người lập: " + nd.getHoTen() + " (" + nd.getMaNguoiDung() + ")");
+                    r2.addBreak();
+                    r2.setText("Ngày lập: " + hd.getNgayLap());
+                    r2.addBreak();
+                    r2.setText("Trạng thái: " + hd.getTrangThai());
+                    r2.addBreak();
+
+                    XWPFTable table = doc.createTable(dsCT.size() + 1, 4);
+                    table.getRow(0).getCell(0).setText("Mã SP");
+                    table.getRow(0).getCell(1).setText("SL");
+                    table.getRow(0).getCell(2).setText("Đơn giá");
+                    table.getRow(0).getCell(3).setText("Thành tiền");
+
+                    for (int i = 0; i < dsCT.size(); i++) {
+                        ChiTietHoaDon ct = dsCT.get(i);
+                        table.getRow(i + 1).getCell(0).setText(String.valueOf(ct.getMaChiTiet()));
+                        table.getRow(i + 1).getCell(1).setText(ct.getSoLuong() + "");
+                        table.getRow(i + 1).getCell(2).setText(moneyFormat.format(ct.getDonGia()));
+                        table.getRow(i + 1).getCell(3).setText(moneyFormat.format(ct.getSoLuong() * ct.getDonGia()));
+                    }
+
+                    XWPFParagraph p3 = doc.createParagraph();
+                    XWPFRun r3 = p3.createRun();
+                    r3.setFontSize(12);
+                    r3.setBold(true);
+                    r3.setText("Tổng tiền: " + moneyFormat.format(hd.getTongTien()) + " đ");
+
+                    try (FileOutputStream fos = new FileOutputStream(path)) {
+                        doc.write(fos);
+                    }
+
+                    FormUIHelper.showSuccessMessage("Hóa đơn đã được lưu tại:\n" + path);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    FormUIHelper.showErrorMessage("Lỗi khi in hóa đơn: " + ex.getMessage());
+                }
             }
         });
 
@@ -268,7 +377,7 @@ public class HoaDonKhuyenMaiPanel extends JPanel {
         JComboBox<String> comboHieuLuc = new JComboBox<>(new String[]{"Tất cả", "Còn hiệu lực", "Hết hiệu lực"});
         comboHieuLuc.setPreferredSize(new Dimension(150, 30));
         comboHieuLuc.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        JButton btnLoc = FormUIHelper.createStyledButton("Lọc", new Color(52, 152, 219));
+        JButton btnLoc = FormUIHelper.createStyledButton("Lọc", new Color(70, 130, 180));
         locPanel.add(FormUIHelper.createStyledLabel("Mã KM:"));
         locPanel.add(txtLocMaKM);
         locPanel.add(comboHieuLuc);
@@ -277,9 +386,9 @@ public class HoaDonKhuyenMaiPanel extends JPanel {
         // Panel chức năng
         JPanel chucNangPanel = FormUIHelper.createTitledPanel("Chức năng");
         chucNangPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 10));
-        JButton btnThem = FormUIHelper.createStyledButton("Thêm", new Color(34, 139, 34));
-        JButton btnSua = FormUIHelper.createStyledButton("Sửa", new Color(242, 161, 0));
-        JButton btnXoa = FormUIHelper.createStyledButton("Xóa", new Color(220, 20, 60));
+        JButton btnThem = FormUIHelper.createStyledButton("Thêm", new Color(70, 130, 180));
+        JButton btnSua = FormUIHelper.createStyledButton("Sửa", new Color(70, 130, 180));
+        JButton btnXoa = FormUIHelper.createStyledButton("Xóa", new Color(70, 130, 180));
         chucNangPanel.add(btnThem);
         chucNangPanel.add(btnSua);
         chucNangPanel.add(btnXoa);
@@ -428,4 +537,23 @@ public class HoaDonKhuyenMaiPanel extends JPanel {
         return mainPanel;
     }
 
+}
+
+class DateLabelFormatter extends javax.swing.JFormattedTextField.AbstractFormatter {
+    private final String datePattern = "yyyy-MM-dd";
+    private final java.text.SimpleDateFormat dateFormatter = new java.text.SimpleDateFormat(datePattern);
+
+    @Override
+    public Object stringToValue(String text) throws java.text.ParseException {
+        return dateFormatter.parseObject(text);
+    }
+
+    @Override
+    public String valueToString(Object value) throws java.text.ParseException {
+        if (value != null) {
+            java.util.Calendar cal = (java.util.Calendar) value;
+            return dateFormatter.format(cal.getTime());
+        }
+        return "";
+    }
 }

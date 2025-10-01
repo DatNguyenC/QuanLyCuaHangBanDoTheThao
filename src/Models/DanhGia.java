@@ -11,19 +11,20 @@ package Models;
 import java.util.Date;
 
 public class DanhGia {
-    private String maDanhGia;
+
+    private int maDanhGia;
+    private int maNguoiDung;
     private String maSanPham;
     private int soSao;
     private String binhLuan;
     private Date ngayDanhGia;
 
     // Getters & Setters
-
-    public String getMaDanhGia() {
+    public int getMaDanhGia() {
         return maDanhGia;
     }
 
-    public void setMaDanhGia(String maDanhGia) {
+    public void setMaDanhGia(int maDanhGia) {
         this.maDanhGia = maDanhGia;
     }
 
@@ -58,5 +59,13 @@ public class DanhGia {
     public void setNgayDanhGia(Date ngayDanhGia) {
         this.ngayDanhGia = ngayDanhGia;
     }
-    
+
+    public int getMaNguoiDung() {
+        return maNguoiDung;
+    }
+
+    public void setMaNguoiDung(int maNguoiDung) {
+        this.maNguoiDung = maNguoiDung;
+    }
+
 }

@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
+import javax.swing.border.TitledBorder;
 
 public class FormNhaCungCap extends JFrame {
 
@@ -19,6 +20,7 @@ public class FormNhaCungCap extends JFrame {
     private DefaultTableModel model;
     private JTextField txtMaLoc, txtTenSdtLoc, txtTen, txtDiaChi, txtSDT, txtEmail;
     private NhaCungCapDAO dao = new NhaCungCapDAO();
+    Color titleColor = new Color(70, 130, 180);
 
     public FormNhaCungCap() {
         setTitle("Quản lý Nhà Cung Cấp");
@@ -35,7 +37,9 @@ public class FormNhaCungCap extends JFrame {
 
         // Form thông tin NCC
         JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 5));
-        formPanel.setBorder(BorderFactory.createTitledBorder("Thông tin nhà cung cấp"));
+        TitledBorder TtnccBorder = BorderFactory.createTitledBorder("THÔNG TIN NHÀ CUNG CẤP");
+        TtnccBorder.setTitleColor(titleColor);
+        formPanel.setBorder(TtnccBorder);
         txtTen = new JTextField();
         txtDiaChi = new JTextField();
         txtSDT = new JTextField();
@@ -52,11 +56,12 @@ public class FormNhaCungCap extends JFrame {
 
         // Chức năng
         JPanel actionPanel = new JPanel(new GridLayout(3, 1, 5, 10));
-        actionPanel.setBorder(BorderFactory.createTitledBorder("Chức năng"));
-
-        JButton btnThem = createStyledButton("Thêm", new Color(34, 139, 34));
-        JButton btnSua = createStyledButton("Sửa", new Color(255, 140, 0));
-        JButton btnXoa = createStyledButton("Xóa", new Color(220, 20, 60));
+        TitledBorder CnBorder = BorderFactory.createTitledBorder("CHỨC NĂNG");
+        CnBorder.setTitleColor(titleColor);
+        actionPanel.setBorder(CnBorder);
+        JButton btnThem = createStyledButton("Thêm", new Color(70, 130, 180));
+        JButton btnSua = createStyledButton("Sửa", new Color(70, 130, 180));
+        JButton btnXoa = createStyledButton("Xóa", new Color(70, 130, 180));
 
         actionPanel.add(btnThem);
         actionPanel.add(btnSua);
@@ -78,12 +83,17 @@ public class FormNhaCungCap extends JFrame {
         tblNCC.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
 
         JScrollPane scrollPane = new JScrollPane(tblNCC);
-        scrollPane.setBorder(BorderFactory.createTitledBorder("Danh sách nhà cung cấp"));
+        TitledBorder DsNccBorder = BorderFactory.createTitledBorder("DANH SÁCH NHÀ CUNG CẤP");
+        DsNccBorder.setTitleColor(titleColor);
+        scrollPane.setBorder(DsNccBorder);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
         // ===== SOUTH: Lọc =====
         JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        filterPanel.setBorder(BorderFactory.createTitledBorder("Lọc nhà cung cấp"));
+        filterPanel.setBorder(BorderFactory.createTitledBorder("LỌC NHÀ CUNG CẤP"));
+        TitledBorder LnccBorder = BorderFactory.createTitledBorder("LỌC NHÀ CUNG CẤP");
+        LnccBorder.setTitleColor(titleColor);
+        filterPanel.setBorder(LnccBorder);
 
         txtMaLoc = new JTextField(5);
         txtTenSdtLoc = new JTextField(10);
@@ -203,7 +213,6 @@ public class FormNhaCungCap extends JFrame {
             loadDataWithCondition(ma, condition, keyword);
         });
 
-
     }
 
     private void loadData(String ma) {
@@ -217,14 +226,14 @@ public class FormNhaCungCap extends JFrame {
             }
         }
     }
-    private void clearForm() {
-    txtTen.setText("");
-    txtDiaChi.setText("");
-    txtSDT.setText("");
-    txtEmail.setText("");
-    tblNCC.clearSelection();
-}
 
+    private void clearForm() {
+        txtTen.setText("");
+        txtDiaChi.setText("");
+        txtSDT.setText("");
+        txtEmail.setText("");
+        tblNCC.clearSelection();
+    }
 
     private void loadDataWithCondition(String ma, String condition, String keyword) {
         model.setRowCount(0);

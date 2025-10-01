@@ -25,8 +25,11 @@ public class AdminForm extends JFrame {
 
     public AdminForm(NguoiDung nd) {
         this.nd = nd;
-        setTitle("Admin Dashboard");
+        setTitle("Quản lý cửa hàng thể thao");
         setSize(1400, 800);
+        ImageIcon icon = new ImageIcon("src/icons/uneti.png");
+        Image scaledImage = icon.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH); // icon chuẩn thường là 32x32
+        setIconImage(scaledImage);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -72,6 +75,17 @@ public class AdminForm extends JFrame {
         JLabel welcomeLabel = new JLabel("Chào mừng đến hệ thống quản trị", JLabel.CENTER);
         welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
         contentPanel.add(welcomeLabel, BorderLayout.CENTER);
+
+        // Hiển thị mặc định panel "Sản phẩm"
+        showPanel("Nhân viên");
+
+// Tô sáng nút "Sản phẩm"
+        for (JButton btn : menuButtons) {
+            if (btn.getText().trim().equals("Nhân viên")) {
+                setActiveButton(btn);
+                break;
+            }
+        }
 
         add(sidebar, BorderLayout.WEST);
         add(contentPanel, BorderLayout.CENTER);
@@ -141,15 +155,24 @@ public class AdminForm extends JFrame {
     private void showPanel(String name) {
         contentPanel.removeAll();
         JPanel panel = switch (name) {
-            case "Tài khoản" -> new ThongTinTaiKhoanPanel(nd, this);
-            case "Bán hàng" -> new BanHangPanel(nd);
-            case "Sản phẩm" -> new SanPhamPanel();
-            case "Kho" -> new KhoPanel();
-            case "Hóa đơn" -> new HoaDonKhuyenMaiPanel();
-            case "Thống kê" -> new ThongKePanel();
-            case "Nhân viên" -> new NhanVienPanel();
-            case "Khách hàng" -> new KhachHangPanel();
-            default -> new JPanel();
+            case "Tài khoản" ->
+                new ThongTinTaiKhoanPanel(nd, this);
+            case "Bán hàng" ->
+                new BanHangPanel(nd);
+            case "Sản phẩm" ->
+                new SanPhamPanel();
+            case "Kho" ->
+                new KhoPanel();
+            case "Hóa đơn" ->
+                new HoaDonKhuyenMaiPanel();
+            case "Thống kê" ->
+                new ThongKePanel();
+            case "Nhân viên" ->
+                new NhanVienPanel();
+            case "Khách hàng" ->
+                new KhachHangPanel();
+            default ->
+                new JPanel();
         };
         contentPanel.add(panel, BorderLayout.CENTER);
         contentPanel.revalidate();

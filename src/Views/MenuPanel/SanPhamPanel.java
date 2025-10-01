@@ -166,9 +166,9 @@ public class SanPhamPanel extends JPanel {
         ));
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.setPreferredSize(new Dimension(100, 100));
-        JButton btnThem = createStyledButton("Thêm", new Color(34, 139, 34));
-        JButton btnSua = createStyledButton("Sửa", new Color(255, 140, 0));
-        JButton btnXoa = createStyledButton("Xóa", new Color(220, 20, 60));
+        JButton btnThem = createStyledButton("Thêm", new Color(70, 130, 180));
+        JButton btnSua = createStyledButton("Sửa", new Color(70, 130, 180));
+        JButton btnXoa = createStyledButton("Xóa", new Color(70, 130, 180));
 
         buttonPanel.add(btnThem);
         buttonPanel.add(btnSua);
@@ -501,9 +501,9 @@ public class SanPhamPanel extends JPanel {
             }
         });
 
-        JButton btnThem = createStyledButton("Thêm", new Color(34, 139, 34));
-        JButton btnSua = createStyledButton("Sửa", new Color(255, 140, 0));
-        JButton btnXoa = createStyledButton("Xóa", new Color(220, 20, 60));
+        JButton btnThem = createStyledButton("Thêm", new Color(70, 130, 180));
+        JButton btnSua = createStyledButton("Sửa", new Color(70, 130, 180));
+        JButton btnXoa = createStyledButton("Xóa", new Color(70, 130, 180));
 
         btnThem.setPreferredSize(new Dimension(90, 30));
         btnSua.setPreferredSize(new Dimension(90, 30));
@@ -612,7 +612,7 @@ public class SanPhamPanel extends JPanel {
         cbFilterMaSP.setPreferredSize(new Dimension(150, 30));
         JTextField txtFilterKichCo = new JTextField(15);
         JButton btnTimKiem = createStyledButton("Tìm kiếm", new Color(70, 130, 180));
-        JButton btnReset = createStyledButton("Reset", new Color(255, 99, 71));
+        JButton btnReset = createStyledButton("Làm mới", new Color(70, 130, 180));
 
         btnTimKiem.addActionListener(e -> {
             int maSP = (int) cbFilterMaSP.getSelectedItem();

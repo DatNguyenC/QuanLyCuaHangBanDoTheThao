@@ -194,11 +194,11 @@ public class ChiTietSanPhamDAO {
         return 0.0;
     }
 
-    public int layMaSPTheoChiTiet(int maCT) {
+    public int layMaSPTheoChiTiet(int maChiTiet) {
         String sql = "SELECT MaSanPham FROM chitietsanpham WHERE MaChiTiet = ?";
-        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, maCT);
-            ResultSet rs = ps.executeQuery();
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, maChiTiet);
+            ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return rs.getInt("MaSanPham");
             }
@@ -245,19 +245,81 @@ public class ChiTietSanPhamDAO {
         return false;
     }
 
-   
-
-        public void congSoLuongTon(int maChiTiet, int soLuong) {
-            try (Connection conn = DBConnect.getConnection()) {
-                String sql = "UPDATE chitietsanpham SET SoLuongTon = SoLuongTon + ? WHERE MaChiTiet = ?";
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.setInt(1, soLuong);
-                stmt.setInt(2, maChiTiet);
-                stmt.executeUpdate();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    public void congSoLuongTon(int maChiTiet, int soLuong) {
+        try (Connection conn = DBConnect.getConnection()) {
+            String sql = "UPDATE chitietsanpham SET SoLuongTon = SoLuongTon + ? WHERE MaChiTiet = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, soLuong);
+            stmt.setInt(2, maChiTiet);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    
+    }
+    // Tính tổng số lượng tồn của 1 sản phẩm (dựa theo MaSanPham)
+
+    public int tinhTongSoLuongTon(int maSanPham) {
+        String sql = "SELECT SUM(SoLuongTon) AS Tong FROM ChiTietSanPham WHERE MaSanPham = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, maSanPham);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("Tong");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int laySoLuongTon(int maChiTiet) {
+        String sql = "SELECT SoLuongTon FROM chitietsanpham WHERE MaChiTiet = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, maChiTiet);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("SoLuongTon");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0; // Return 0 if no stock is found or an error occurs
+    }
+
+    public ChiTietSanPham layChiTietSanPhamTheoMa(int maChiTiet) {
+        String sql = "SELECT * FROM ChiTietSanPham WHERE MaChiTiet = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, maChiTiet);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                ChiTietSanPham ct = new ChiTietSanPham();
+                ct.setMaChiTiet(rs.getInt("MaChiTiet"));
+                ct.setMaSanPham(rs.getInt("MaSanPham"));
+                ct.setKichCo(rs.getString("KichCo"));
+                ct.setMauSac(rs.getString("MauSac"));
+                ct.setSoLuongTon(rs.getInt("SoLuongTon"));
+                ct.setHinhAnhChiTiet(rs.getString("HinhAnhChiTiet"));
+                ct.setGiaThanh(rs.getInt("GiaThanh"));
+                return ct;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public int layMaKhuyenMaiTheoChiTiet(int maChiTiet) {
+        String sql = "SELECT MaKhuyenMai FROM chitietsanpham WHERE MaChiTiet = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, maChiTiet);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("MaKhuyenMai");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
 
 }

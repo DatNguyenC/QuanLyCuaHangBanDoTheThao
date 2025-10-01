@@ -79,4 +79,26 @@ public class ChiTietHoaDonDAO {
             e.printStackTrace();
         }
     }
+
+    public List<ChiTietHoaDon> layTatCa() {
+        List<ChiTietHoaDon> list = new ArrayList<>();
+        String sql = "SELECT * FROM chitiethoadon";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                ChiTietHoaDon ct = new ChiTietHoaDon();
+                ct.setMaChiTietHD(rs.getInt("MaChiTietHD"));
+                ct.setMaHoaDon(rs.getInt("MaHoaDon"));
+                ct.setMaChiTiet(rs.getInt("MaChiTiet"));
+                ct.setSoLuong(rs.getInt("SoLuong"));
+                ct.setDonGia(rs.getDouble("DonGia"));
+                list.add(ct);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
+
 }

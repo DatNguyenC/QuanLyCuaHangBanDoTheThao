@@ -12,17 +12,22 @@ import Models.ChiTietNhap;
 import Views.FormDieuHuong.FormNhaCungCap;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.DecimalFormat;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
+import javax.swing.border.TitledBorder;
 
 public class KhoPanel extends JPanel {
 
     private JTable tblChiTietNhap;
     private DefaultTableModel modelChiTietNhap;
     private JTextField txtTimMaChiTietPN;
+    Color titleColor = new Color(70, 130, 180);
+
+    private final DecimalFormat moneyFormat = new DecimalFormat("#,###");
 
     private JTable tblPhieuNhap;
     private DefaultTableModel modelPhieuNhap;
@@ -45,7 +50,9 @@ public class KhoPanel extends JPanel {
 
         // -- Tìm kiếm
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        searchPanel.setBorder(BorderFactory.createTitledBorder("Tìm kiếm"));
+        TitledBorder searchBorder = BorderFactory.createTitledBorder("TÌM KIẾM");
+        searchBorder.setTitleColor(titleColor);
+        searchPanel.setBorder(searchBorder);
         txtTimMaPhieuNhap = new JTextField(15);
         JButton btnTim = createStyledButton("Tìm", new Color(70, 130, 180));
         searchPanel.add(new JLabel("Mã phiếu:"));
@@ -54,19 +61,23 @@ public class KhoPanel extends JPanel {
 
         // -- Thao tác
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        actionPanel.setBorder(BorderFactory.createTitledBorder("Thao tác"));
-        JButton btnTao = createStyledButton("Tạo Phiếu Nhập", new Color(34, 139, 34));
-        JButton btnSua = createStyledButton("Sửa Phiếu Nhập", new Color(255, 140, 0));
-        JButton btnXoa = createStyledButton("Xóa phiếu", new Color(220, 20, 60));
-        JButton btnNhapKho = createStyledButton("Nhập kho", new Color(100, 149, 237));
+        TitledBorder actionBorder = BorderFactory.createTitledBorder("THAO TÁC");
+        actionBorder.setTitleColor(titleColor);
+        actionPanel.setBorder(actionBorder);
+        JButton btnTao = createStyledButton("Tạo Phiếu Nhập", new Color(70, 130, 180));
+        JButton btnSua = createStyledButton("Sửa Phiếu Nhập", new Color(70, 130, 180));
+        JButton btnXoa = createStyledButton("Xóa phiếu", new Color(70, 130, 180));
+        JButton btnNhapKho = createStyledButton("Nhập kho", new Color(70, 130, 180));
         actionPanel.add(btnTao);
         actionPanel.add(btnSua);
         actionPanel.add(btnXoa);
         actionPanel.add(btnNhapKho);
         // -- Nhà cung cấp
         JPanel nccPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        nccPanel.setBorder(BorderFactory.createTitledBorder("Nhà cung cấp"));
-        JButton btnXemNCC = createStyledButton("Xem Nhà Cung Cấp", new Color(65, 105, 225));
+        TitledBorder nccBorder = BorderFactory.createTitledBorder("NHÀ CUNG CHẤP");
+        nccBorder.setTitleColor(titleColor);
+        nccPanel.setBorder(nccBorder);
+        JButton btnXemNCC = createStyledButton("Xem Nhà Cung Cấp", new Color(70, 130, 180));
         btnXemNCC.setPreferredSize(new Dimension(180, 40)); // Hoặc tăng lên 200 nếu cần
         nccPanel.add(btnXemNCC);
 
@@ -90,16 +101,20 @@ public class KhoPanel extends JPanel {
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         tblPhieuNhap.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         JScrollPane scrollPN = new JScrollPane(tblPhieuNhap);
-        scrollPN.setBorder(BorderFactory.createTitledBorder("Danh sách phiếu nhập"));
+        TitledBorder DsPhieuNhapBorder = BorderFactory.createTitledBorder("DANH SÁCH PHIẾU NHẬP");
+        DsPhieuNhapBorder.setTitleColor(titleColor);
+        scrollPN.setBorder(DsPhieuNhapBorder);
 
         // === Bottom Panel: CHI TIẾT PHIẾU NHẬP ===
         JPanel bottomPanel = new JPanel(new BorderLayout(10, 10));
-        bottomPanel.setBorder(BorderFactory.createTitledBorder("Chi tiết phiếu nhập"));
-
         JPanel bottomTopPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-
+        TitledBorder CtPhieuNhapBorder = BorderFactory.createTitledBorder("CHI TIẾT PHIẾU NHẬP");
+        CtPhieuNhapBorder.setTitleColor(titleColor);
+        bottomPanel.setBorder(CtPhieuNhapBorder);
         JPanel searchCTPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        searchCTPanel.setBorder(BorderFactory.createTitledBorder("Tìm kiếm"));
+        TitledBorder searchCTBorder = BorderFactory.createTitledBorder("TÌM KIẾM");
+        searchCTBorder.setTitleColor(titleColor);
+        searchCTPanel.setBorder(searchCTBorder);
         txtTimMaChiTietPN = new JTextField(10);
         JButton btnTimCT = createStyledButton("Tìm", new Color(70, 130, 180));
         searchCTPanel.add(new JLabel("Mã chi tiết phiếu nhập:"));
@@ -107,10 +122,12 @@ public class KhoPanel extends JPanel {
         searchCTPanel.add(btnTimCT);
 
         JPanel actionCTPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        actionCTPanel.setBorder(BorderFactory.createTitledBorder("Thao tác"));
-        JButton btnTaoCT = createStyledButton("Tạo Chi Tiết", new Color(34, 139, 34));
-        JButton btnSuaCT = createStyledButton("Sửa Chi Tiết", new Color(255, 140, 0));
-        JButton btnXoaCT = createStyledButton("Xóa Chi Tiết", new Color(220, 20, 60));
+        TitledBorder actionCTBorder = BorderFactory.createTitledBorder("THAO TÁC");
+        actionCTBorder.setTitleColor(titleColor);
+        actionCTPanel.setBorder(actionCTBorder);
+        JButton btnTaoCT = createStyledButton("Tạo Chi Tiết", new Color(70, 130, 180));
+        JButton btnSuaCT = createStyledButton("Sửa Chi Tiết", new Color(70, 130, 180));
+        JButton btnXoaCT = createStyledButton("Xóa Chi Tiết", new Color(70, 130, 180));
         actionCTPanel.add(btnTaoCT);
         actionCTPanel.add(btnSuaCT);
         actionCTPanel.add(btnXoaCT);
@@ -195,6 +212,12 @@ public class KhoPanel extends JPanel {
 
             // Lấy danh sách chi tiết phiếu nhập
             List<ChiTietNhap> danhSachChiTiet = chiTietNhapDAO.layTheoMaPhieuNhap(maPhieuNhap);
+
+            if (danhSachChiTiet.isEmpty()) {
+                showErrorMessage("Phiếu nhập chưa có chi tiết. Không thể nhập kho.");
+                return;
+            }
+
             boolean thanhCong = true;
 
             for (ChiTietNhap chiTiet : danhSachChiTiet) {
@@ -237,7 +260,8 @@ public class KhoPanel extends JPanel {
             ctn.setMaPhieuNhap((int) modelChiTietNhap.getValueAt(row, 1));
             ctn.setMaChiTiet((int) modelChiTietNhap.getValueAt(row, 2));
             ctn.setSoLuongNhap((int) modelChiTietNhap.getValueAt(row, 3));
-            ctn.setDonGiaNhap((double) modelChiTietNhap.getValueAt(row, 4));
+            String giaStr = modelChiTietNhap.getValueAt(row, 4).toString().replace(",", "");
+            ctn.setDonGiaNhap(Double.parseDouble(giaStr));
             new FormSuaChiTietNhap(this, ctn).setVisible(true);
         });
         btnXoaCT.addActionListener(e -> {
@@ -294,8 +318,9 @@ public class KhoPanel extends JPanel {
             if (keyword.isEmpty() || String.valueOf(ctn.getMaChiTietPN()).contains(keyword)) {
                 modelChiTietNhap.addRow(new Object[]{
                     ctn.getMaChiTietPN(), ctn.getMaPhieuNhap(), ctn.getMaChiTiet(),
-                    ctn.getSoLuongNhap(), ctn.getDonGiaNhap()
+                    ctn.getSoLuongNhap(), moneyFormat.format(ctn.getDonGiaNhap())
                 });
+
             }
         }
     }

@@ -15,6 +15,18 @@ public class ChiTietGioHang {
     int maChiTiet;
     int soLuong;
 
+    public ChiTietGioHang(int maChiTietGH, int maGioHang, int maChiTiet, int soLuong) {
+        this.maChiTietGH = maChiTietGH;
+        this.maGioHang = maGioHang;
+        this.maChiTiet = maChiTiet;
+        this.soLuong = soLuong;
+    }
+
+    public ChiTietGioHang() {
+    }
+    
+
+    
     public int getMaChiTietGH() {
         return maChiTietGH;
     }

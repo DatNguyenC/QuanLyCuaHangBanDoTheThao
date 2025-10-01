@@ -164,4 +164,30 @@ public class NguoiDungDAO {
         return false;
     }
 
+    public boolean capNhatMatKhau(int maNguoiDung, String matKhauMoi) {
+        String sql = "UPDATE nguoidung SET MatKhau = ? WHERE MaNguoiDung = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, matKhauMoi);
+            ps.setInt(2, maNguoiDung);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public NguoiDung layNguoiDungBangMa(int maNguoiDung) {
+        String sql = "SELECT * FROM nguoidung WHERE MaNguoiDung = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, maNguoiDung);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return mapResultSetToNguoiDung(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

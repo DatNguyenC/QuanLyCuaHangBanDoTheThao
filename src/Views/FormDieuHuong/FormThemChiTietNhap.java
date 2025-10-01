@@ -81,8 +81,8 @@ public class FormThemChiTietNhap extends JDialog {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         buttonPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
         
-        JButton btnThem = createStyledButton("Thêm", new Color(34, 139, 34));
-        JButton btnHuy = createStyledButton("Hủy", new Color(220, 20, 60));
+        JButton btnThem = createStyledButton("Thêm", new Color(70, 130, 180));
+        JButton btnHuy = createStyledButton("Hủy", new Color(70, 130, 180));
         
         btnThem.addActionListener(this::handleThem);
         btnHuy.addActionListener(e -> dispose());

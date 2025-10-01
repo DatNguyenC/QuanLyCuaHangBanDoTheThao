@@ -6,6 +6,7 @@ import DAO.SanPhamDAO;
 import DAO.HoaDonDAO;
 import DAO.ChiTietHoaDonDAO;
 import DAO.GioHangDAO;
+import DAO.ChiTietSanPhamDAO;
 
 import Models.ChiTietGioHang;
 import Models.HoaDon;
@@ -28,8 +29,7 @@ public class FormTaoHoaDon extends JDialog {
     private final NguoiDung nguoiDung;
 
     private JPanel pnlKhuyenMai = new JPanel(new GridLayout(0, 1));
-    private List<JRadioButton> radKhuyenMaiList = new ArrayList<>();
-    private ButtonGroup groupKhuyenMai = new ButtonGroup();
+    private List<JCheckBox> chkKhuyenMaiList = new ArrayList<>();
 
     private JComboBox<String> cmbHinhThuc = new JComboBox<>(new String[]{"Bán trực tiếp", "Giao hàng (+15K)"});
     private JTextField txtTongTien = new JTextField(15);
@@ -40,6 +40,7 @@ public class FormTaoHoaDon extends JDialog {
     private final SanPhamDAO sanPhamDAO = new SanPhamDAO();
     private final HoaDonDAO hoaDonDAO = new HoaDonDAO();
     private final ChiTietHoaDonDAO chiTietHoaDonDAO = new ChiTietHoaDonDAO();
+    private final ChiTietSanPhamDAO chiTietSanPhamDAO = new ChiTietSanPhamDAO();
 
     private double tongTien = 0;
 
@@ -74,7 +75,7 @@ public class FormTaoHoaDon extends JDialog {
         add(form, BorderLayout.CENTER);
 
         JPanel bottom = new JPanel();
-        JButton btnTao = createStyledButton("Tạo đơn", new Color(30, 144, 255));
+        JButton btnTao = createStyledButton("Tạo đơn", new Color(70, 130, 180));
         JButton btnHuy = createStyledButton("Hủy", new Color(220, 20, 60));
         bottom.add(btnTao);
         bottom.add(btnHuy);
@@ -92,43 +93,51 @@ public class FormTaoHoaDon extends JDialog {
             // Lấy danh sách chi tiết giỏ hàng
             List<ChiTietGioHang> dsCT = chiTietGioHangDAO.layChiTietTheoGioHang(maGioHang);
 
-            // ✅ Kiểm tra tồn kho
+            // Kiểm tra tồn kho
             for (ChiTietGioHang ct : dsCT) {
                 int maChiTiet = ct.getMaChiTiet();
                 int soLuongDat = ct.getSoLuong();
-
-                int soLuongTon = sanPhamDAO.laySoLuongTon(maChiTiet); // bạn cần có hàm này trong DAO
+                int soLuongTon = sanPhamDAO.laySoLuongTon(maChiTiet);
 
                 if (soLuongTon < soLuongDat) {
                     showErrorMessage("Không đủ hàng trong kho cho sản phẩm mã chi tiết " + maChiTiet
                             + ".\nTồn kho: " + soLuongTon + " | Đặt mua: " + soLuongDat);
-                    return; // ❌ Dừng xử lý nếu không đủ hàng
+                    return;
                 }
             }
 
-            // ✅ Tạo hóa đơn
+            // Tạo hóa đơn
             HoaDon hd = new HoaDon();
             hd.setMaNguoiDung(nguoiDung.getMaNguoiDung());
             hd.setNgayLap(LocalDateTime.now());
-            hd.setTrangThai("ChuaThanhToan");
+            if (cmbHinhThuc.getSelectedItem().toString().equals("Bán trực tiếp")) {
+                hd.setTrangThai("ChuaThanhToan");
+            } else {
+                hd.setTrangThai("DangGiao");
+            }
+
             hd.setTongTien(Double.parseDouble(txtThanhToan.getText()));
 
             List<KhuyenMai> dsKM = getKhuyenMaiDuocChon();
             if (!dsKM.isEmpty()) {
-                hd.setMaKM(dsKM.get(0).getMaKM()); // áp dụng 1 KM nếu có
+                // Có thể lưu nhiều mã KM, nhưng hiện tại chỉ lưu mã KM đầu tiên (có thể mở rộng logic lưu nhiều KM)
+                hd.setMaKM(dsKM.get(0).getMaKM());
             }
 
-            int maHD = hoaDonDAO.themVaLayMa(hd); // tạo và lấy mã HĐ
+            int maHD = hoaDonDAO.themVaLayMa(hd);
 
-            // ✅ Tạo chi tiết hóa đơn
+            // Tạo chi tiết hóa đơn
             for (ChiTietGioHang ct : dsCT) {
                 int maChiTiet = ct.getMaChiTiet();
-                double gia = sanPhamDAO.layGiaTheoMaChiTiet(maChiTiet);
+                double gia = 0;
+                Models.ChiTietSanPham ctsp = chiTietSanPhamDAO.layChiTietSanPhamTheoMa(maChiTiet);
+                if (ctsp != null) {
+                    gia = ctsp.getGiaThanh();
+                }
                 int soLuong = ct.getSoLuong();
                 double thanhTien = gia * soLuong;
 
                 SanPham sp = sanPhamDAO.laySanPhamTheoMaChiTiet(maChiTiet);
-
                 for (KhuyenMai km : dsKM) {
                     if (km.getMaSanPham() == sp.getMaSanPham()) {
                         thanhTien -= thanhTien * (km.getPhanTramGiam() / 100.0);
@@ -140,30 +149,28 @@ public class FormTaoHoaDon extends JDialog {
                 cthd.setMaHoaDon(maHD);
                 cthd.setMaChiTiet(maChiTiet);
                 cthd.setSoLuong(soLuong);
-                cthd.setDonGia(thanhTien / soLuong); // đơn giá sau khuyến mãi
+                cthd.setDonGia(thanhTien / soLuong);
 
                 chiTietHoaDonDAO.themChiTiet(cthd);
-                GioHangDAO gioHangDAO = new GioHangDAO();
-                gioHangDAO.xoaGioHang(maGioHang);
             }
+
+            GioHangDAO gioHangDAO = new GioHangDAO();
+            gioHangDAO.xoaGioHang(maGioHang);
 
             showSuccessMessage("Tạo đơn hàng thành công!\nMã HĐ: " + maHD
                     + "\nTổng thanh toán: " + txtThanhToan.getText());
             dispose();
         });
-
     }
 
     private void loadKhuyenMai() {
         pnlKhuyenMai.removeAll();
-        radKhuyenMaiList.clear();
-        groupKhuyenMai = new ButtonGroup();
+        chkKhuyenMaiList.clear();
 
-        JRadioButton radNone = new JRadioButton("Không áp dụng khuyến mãi");
-        radNone.setSelected(true);
-        radNone.addActionListener(e -> tinhTien());
-        groupKhuyenMai.add(radNone);
-        pnlKhuyenMai.add(radNone);
+        JCheckBox chkNone = new JCheckBox("Không áp dụng khuyến mãi");
+        chkNone.setSelected(true);
+        chkNone.addActionListener(e -> tinhTien());
+        pnlKhuyenMai.add(chkNone);
 
         List<ChiTietGioHang> dsCT = chiTietGioHangDAO.layChiTietTheoGioHang(maGioHang);
         List<Integer> maSanPhamTrongGio = new ArrayList<>();
@@ -185,13 +192,11 @@ public class FormTaoHoaDon extends JDialog {
             String label = String.format("KM#%d - %s (%d%%) → %s (Mã SP: %d)",
                     km.getMaKM(), km.getTenKM(), (int) km.getPhanTramGiam(), tenSP, km.getMaSanPham());
 
-            JRadioButton rad = new JRadioButton(label);
-            rad.putClientProperty("data", km);
-            rad.addActionListener(e -> tinhTien());
-
-            radKhuyenMaiList.add(rad);
-            groupKhuyenMai.add(rad);
-            pnlKhuyenMai.add(rad);
+            JCheckBox chk = new JCheckBox(label);
+            chk.putClientProperty("data", km);
+            chk.addActionListener(e -> tinhTien());
+            chkKhuyenMaiList.add(chk);
+            pnlKhuyenMai.add(chk);
         }
 
         pnlKhuyenMai.revalidate();
@@ -206,16 +211,21 @@ public class FormTaoHoaDon extends JDialog {
 
         for (ChiTietGioHang ct : dsCT) {
             int maChiTiet = ct.getMaChiTiet();
-            double gia = sanPhamDAO.layGiaTheoMaChiTiet(maChiTiet);
+            double gia = 0;
+            Models.ChiTietSanPham ctsp = chiTietSanPhamDAO.layChiTietSanPhamTheoMa(maChiTiet);
+            if (ctsp != null) {
+                gia = ctsp.getGiaThanh();
+            }
             int soLuong = ct.getSoLuong();
             double thanhTien = gia * soLuong;
 
             SanPham sp = sanPhamDAO.laySanPhamTheoMaChiTiet(maChiTiet);
 
+            // Áp dụng tất cả mã khuyến mãi phù hợp với sản phẩm
             for (KhuyenMai km : dsKM) {
                 if (km.getMaSanPham() == sp.getMaSanPham()) {
                     thanhTien -= thanhTien * (km.getPhanTramGiam() / 100.0);
-                    break;
+                    break; // Chỉ áp dụng một KM cho mỗi sản phẩm (có thể bỏ break nếu muốn cộng dồn KM)
                 }
             }
 
@@ -230,13 +240,12 @@ public class FormTaoHoaDon extends JDialog {
     }
 
     private List<KhuyenMai> getKhuyenMaiDuocChon() {
-        for (JRadioButton rad : radKhuyenMaiList) {
-            if (rad.isSelected()) {
-                List<KhuyenMai> list = new ArrayList<>();
-                list.add((KhuyenMai) rad.getClientProperty("data"));
-                return list;
+        List<KhuyenMai> selectedKM = new ArrayList<>();
+        for (JCheckBox chk : chkKhuyenMaiList) {
+            if (chk.isSelected()) {
+                selectedKM.add((KhuyenMai) chk.getClientProperty("data"));
             }
         }
-        return new ArrayList<>();
+        return selectedKM;
     }
 }

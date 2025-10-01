@@ -133,4 +133,50 @@ public class HoaDonDAO {
 
         return maHD;
     }
+
+    public Map<String, Double> layDoanhThuTheoThang() {
+        Map<String, Double> doanhThuTheoThang = new LinkedHashMap<>();
+        String sql = "SELECT DATE_FORMAT(NgayLap, '%Y-%m') AS Thang, SUM(TongTien) AS Tong "
+                + "FROM hoadon WHERE TrangThai = 'DaThanhToan' "
+                + "GROUP BY Thang ORDER BY Thang";
+
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String thang = rs.getString("Thang");
+                double tong = rs.getDouble("Tong");
+                doanhThuTheoThang.put(thang, tong);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return doanhThuTheoThang;
+    }
+
+    public List<HoaDon> layHoaDonTheoNguoiDungVaTrangThai(int maNguoiDung, String trangThai) {
+        List<HoaDon> list = new ArrayList<>();
+        String sql = "SELECT * FROM hoadon WHERE MaNguoiDung = ? AND TrangThai = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, maNguoiDung);
+            ps.setString(2, trangThai);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                HoaDon hd = new HoaDon();
+                hd.setMaHoaDon(rs.getInt("MaHoaDon"));
+                hd.setMaNguoiDung(rs.getInt("MaNguoiDung"));
+                hd.setNgayLap(rs.getTimestamp("NgayLap").toLocalDateTime());
+                hd.setTongTien(rs.getDouble("TongTien"));
+                hd.setTrangThai(rs.getString("TrangThai"));
+                int maKM = rs.getInt("MaKM");
+                hd.setMaKM(rs.wasNull() ? null : maKM);
+                list.add(hd);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

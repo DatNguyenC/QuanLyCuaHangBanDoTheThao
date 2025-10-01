@@ -85,4 +85,68 @@ public class FormUIHelper {
         JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
     }
 
+    public static void showInfoMessage(String message) {
+        JOptionPane.showMessageDialog(null, message, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static JButton createRoundedButton(String text) {
+        JButton button = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                super.paintComponent(g2);
+                g2.dispose();
+            }
+
+            @Override
+            protected void paintBorder(Graphics g) {
+                // Không vẽ viền
+            }
+        };
+        button.setOpaque(false);
+        button.setForeground(Color.WHITE);
+        button.setBackground(Color.BLACK);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        button.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return button;
+    }
+
+    public static void styleBlackWhiteButton(JButton button) {
+        button.setForeground(Color.WHITE);
+        button.setBackground(Color.BLACK);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        button.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Bo tròn góc
+        button.setContentAreaFilled(false);
+        button.setOpaque(false);
+        button.setUI(new javax.swing.plaf.basic.BasicButtonUI() {
+            @Override
+            public void paint(Graphics g, JComponent c) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                // Màu nền
+                g2.setColor(button.getModel().isRollover() ? new Color(30, 30, 30) : Color.BLACK);
+                g2.fillRoundRect(0, 0, c.getWidth(), c.getHeight(), 30, 30);
+
+                super.paint(g, c);
+                g2.dispose();
+            }
+
+            @Override
+            public void paintButtonPressed(Graphics g, AbstractButton b) {
+                g.setColor(new Color(50, 50, 50));
+                g.fillRoundRect(0, 0, b.getWidth(), b.getHeight(), 30, 30);
+            }
+        });
+    }
+
 }

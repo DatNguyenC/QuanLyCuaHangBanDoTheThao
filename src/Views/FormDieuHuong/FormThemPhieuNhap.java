@@ -18,6 +18,7 @@ public class FormThemPhieuNhap extends JFrame {
     private JComboBox<NhaCungCap> cboNCC;
     private JSpinner spNgayNhap;
     private KhoPanel parent;
+    Color titleColor = new Color(70, 130, 180);
 
     public FormThemPhieuNhap(KhoPanel parent) {
         this.parent = parent;
@@ -43,7 +44,9 @@ public class FormThemPhieuNhap extends JFrame {
 
         // Form panel
         JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 15));
-        formPanel.setBorder(new TitledBorder("Thông tin phiếu nhập"));
+        TitledBorder TtpnBorder = BorderFactory.createTitledBorder("THÔNG TIN PHIẾU NHẬP");
+        TtpnBorder.setTitleColor(titleColor);
+        formPanel.setBorder(TtpnBorder);
 
         cboNCC = new JComboBox<>();
         cboNCC.setPreferredSize(new Dimension(200, 30));

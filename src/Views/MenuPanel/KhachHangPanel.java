@@ -12,11 +12,10 @@ import java.awt.event.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
 
 public class KhachHangPanel extends JPanel {
 
-    private JTextField txtMaKH, txtHoTen, txtSoDienThoai, txtEmail, txtDiaChi,txtTenDangNhap,txtMatKhau;
+    private JTextField txtMaKH, txtHoTen, txtSoDienThoai, txtDiaChi, txtTenDangNhap, txtMatKhau;
     private JTable table;
     private DefaultTableModel tableModel;
     private JLabel lblAnh;
@@ -53,46 +52,42 @@ public class KhachHangPanel extends JPanel {
         txtSoDienThoai = FormUIHelper.createStyledTextField();
         FormUIHelper.addFormRow(formPanel, gbc, 2, "SĐT:", txtSoDienThoai);
 
-        txtEmail = FormUIHelper.createStyledTextField();
-        FormUIHelper.addFormRow(formPanel, gbc, 3, "Email:", txtEmail);
-
         txtDiaChi = FormUIHelper.createStyledTextField();
-        FormUIHelper.addFormRow(formPanel, gbc, 4, "Địa chỉ:", txtDiaChi);
+        FormUIHelper.addFormRow(formPanel, gbc, 3, "Địa chỉ:", txtDiaChi);
 
-        JTextField txtTenDangNhap = FormUIHelper.createStyledTextField();
-        FormUIHelper.addFormRow(formPanel, gbc, 5, "Tên đăng nhập:", txtTenDangNhap);
+        txtTenDangNhap = FormUIHelper.createStyledTextField();
+        FormUIHelper.addFormRow(formPanel, gbc, 4, "Tên đăng nhập:", txtTenDangNhap);
 
-        JTextField txtMatKhau = FormUIHelper.createStyledTextField();
-        FormUIHelper.addFormRow(formPanel, gbc, 6, "Mật khẩu:", txtMatKhau);
+        txtMatKhau = FormUIHelper.createStyledTextField();
+        FormUIHelper.addFormRow(formPanel, gbc, 5, "Mật khẩu:", txtMatKhau);
 
         lblAnh = new JLabel("Ảnh", JLabel.CENTER);
         lblAnh.setPreferredSize(new Dimension(120, 140));
         lblAnh.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        FormUIHelper.addFormRow(formPanel, gbc, 7, "Ảnh đại diện:", lblAnh);
+        FormUIHelper.addFormRow(formPanel, gbc, 6, "Ảnh đại diện:", lblAnh);
 
-        JButton btnChonAnh = FormUIHelper.createStyledButton("Chọn ảnh", new Color(100, 149, 237));
+        JButton btnChonAnh = FormUIHelper.createStyledButton("Chọn ảnh", new Color(70, 130, 180));
         gbc.gridx = 1;
-        gbc.gridy = 8;
+        gbc.gridy = 7;
         formPanel.add(btnChonAnh, gbc);
 
         contentPanel.add(formPanel, BorderLayout.WEST);
 
         JPanel tablePanel = FormUIHelper.createTitledPanel("DANH SÁCH KHÁCH HÀNG");
         tablePanel.setLayout(new BorderLayout());
-        tableModel = new DefaultTableModel(new Object[]{"Mã", "Họ tên", "SĐT", "Email", "Địa chỉ", "Ảnh"}, 0);
+        tableModel = new DefaultTableModel(new Object[]{"Mã", "Họ tên", "SĐT", "Tên ĐN", "Địa chỉ", "Ảnh"}, 0);
         table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
         tablePanel.add(scrollPane, BorderLayout.CENTER);
         contentPanel.add(tablePanel, BorderLayout.CENTER);
 
         JPanel locPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-//        locPanel.setPreferredSize(new Dimension(100, 60));
         locPanel.setBackground(Color.WHITE);
         locPanel.setBorder(BorderFactory.createTitledBorder("Lọc khách hàng"));
 
         JTextField txtLocMa = FormUIHelper.createStyledTextField(10);
         JTextField txtLocTen = FormUIHelper.createStyledTextField(10);
-        JButton btnLoc = FormUIHelper.createStyledButton("Lọc", new Color(100, 149, 237));
+        JButton btnLoc = FormUIHelper.createStyledButton("Lọc", new Color(70, 130, 180));
 
         locPanel.add(new JLabel("Mã KH:"));
         locPanel.add(txtLocMa);
@@ -107,10 +102,10 @@ public class KhachHangPanel extends JPanel {
         btnPanel.setBorder(BorderFactory.createTitledBorder("CHỨC NĂNG"));
         btnPanel.setBackground(Color.WHITE);
 
-        JButton btnThem = FormUIHelper.createStyledButton("Thêm", new Color(60, 179, 113));
-        JButton btnSua = FormUIHelper.createStyledButton("Sửa", new Color(255, 165, 0));
-        JButton btnXoa = FormUIHelper.createStyledButton("Xóa", new Color(220, 53, 69));
-        JButton btnClear = FormUIHelper.createStyledButton("Làm mới", new Color(100, 149, 237));
+        JButton btnThem = FormUIHelper.createStyledButton("Thêm", new Color(70, 130, 180));
+        JButton btnSua = FormUIHelper.createStyledButton("Sửa", new Color(70, 130, 180));
+        JButton btnXoa = FormUIHelper.createStyledButton("Xóa", new Color(70, 130, 180));
+        JButton btnClear = FormUIHelper.createStyledButton("Làm mới", new Color(70, 130, 180));
 
         for (JButton btn : new JButton[]{btnThem, btnSua, btnXoa, btnClear}) {
             btn.setMaximumSize(new Dimension(150, 40));
@@ -124,15 +119,17 @@ public class KhachHangPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int row = table.getSelectedRow();
-                txtMaKH.setText(tableModel.getValueAt(row, 0).toString());
-                txtHoTen.setText(tableModel.getValueAt(row, 1).toString());
-                txtSoDienThoai.setText(tableModel.getValueAt(row, 2).toString());
-                txtEmail.setText(tableModel.getValueAt(row, 3).toString());
-                txtDiaChi.setText(tableModel.getValueAt(row, 4).toString());
-                txtTenDangNhap.setText(tableModel.getValueAt(row, 3).toString());
+                txtMaKH.setText(String.valueOf(tableModel.getValueAt(row, 0)));
+                txtHoTen.setText(String.valueOf(tableModel.getValueAt(row, 1)));
+                txtSoDienThoai.setText(String.valueOf(tableModel.getValueAt(row, 2)));
+                txtTenDangNhap.setText(String.valueOf(tableModel.getValueAt(row, 3)));
+                txtDiaChi.setText(String.valueOf(tableModel.getValueAt(row, 4)));
                 txtMatKhau.setText("");
-                tenAnh = tableModel.getValueAt(row, 5).toString();
+
+                Object objAnh = tableModel.getValueAt(row, 5);
+                tenAnh = objAnh != null ? objAnh.toString() : "";
                 hienThiAnh(tenAnh);
+
             }
         });
 
@@ -202,12 +199,9 @@ public class KhachHangPanel extends JPanel {
             kh.setTenDangNhap(txtTenDangNhap.getText());
             String matKhau = txtMatKhau.getText();
 
-            if (!matKhau.isEmpty()) {
-                kh.setMatKhau(matKhau);
-            }
-
             boolean success;
             if (!matKhau.isEmpty()) {
+                kh.setMatKhau(matKhau);
                 success = nguoiDungDAO.capNhatThongTinFull(kh);
             } else {
                 success = nguoiDungDAO.capNhatThongTin(kh);
@@ -281,12 +275,10 @@ public class KhachHangPanel extends JPanel {
         txtSoDienThoai.setText("");
         txtTenDangNhap.setText("");
         txtMatKhau.setText("");
-        txtEmail.setText("");
         txtDiaChi.setText("");
         tenAnh = "";
         lblAnh.setIcon(null);
         lblAnh.setText("Ảnh");
-
     }
 
     private void hienThiAnh(String tenFile) {
